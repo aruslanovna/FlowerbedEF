@@ -18,47 +18,36 @@ namespace Floberbed.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
-        // GET: WarehouseFlowers
-        public async Task<IActionResult> Index()
+     public async Task<IActionResult> Index()
         {
-            var warehouseFlower = _unitOfWork.WarehouseFlowers.GetAll();
-            //var flowerbedDbContext = _unitOfWork.WarehouseFlowers.Include(w => w.Flower).Include(w => w.Warehouse);
+            var warehouseFlower = _unitOfWork.WarehouseFlowers.GetWithInclude(w => w.Flower, w => w.Warehouse);
+          
             return View(warehouseFlower.ToList());
         }
 
-        // GET: WarehouseFlowers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var warehouseFlower = _unitOfWork.WarehouseFlowers.GetAll();
-            //var warehouseFlower = await _unitOfWork.WarehouseFlowers
-            //    .Include(w => w.Flower)
-            //    .Include(w => w.Warehouse)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            if (warehouseFlower == null)
+            var warehouseFlower =_unitOfWork.WarehouseFlowers.GetAllLazyLoad(p => p.Id == id, p => p.Flower, p => p.Warehouse).AsNoTracking().First();
+
+              if (warehouseFlower == null)
             {
                 return NotFound();
             }
 
             return View(warehouseFlower);
         }
-
-        // GET: WarehouseFlowers/Create
-        public IActionResult Create()
+    public IActionResult Create()
         {
             ViewData["FlowerId"] = new SelectList(_unitOfWork.Flowers.GetAll(), "Id", "Name");
             ViewData["WarehouseId"] = new SelectList(_unitOfWork.Warehouses.GetAll(), "Id", "Id");
             return View();
         }
 
-        // POST: WarehouseFlowers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+           [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FlowerId,WarehouseId,Amount")] WarehouseFlower warehouseFlower)
         {
@@ -73,8 +62,7 @@ namespace Floberbed.Controllers
             return View(warehouseFlower);
         }
 
-        // GET: WarehouseFlowers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -91,10 +79,7 @@ namespace Floberbed.Controllers
             return View(warehouseFlower);
         }
 
-        // POST: WarehouseFlowers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+          [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FlowerId,WarehouseId,Amount")] WarehouseFlower warehouseFlower)
         {
@@ -128,18 +113,14 @@ namespace Floberbed.Controllers
             return View(warehouseFlower);
         }
 
-        // GET: WarehouseFlowers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var warehouseFlower = await _unitOfWork.WarehouseFlowers.GetByID(id);
-            //var warehouseFlower = await _unitOfWork.WarehouseFlowers
-            //    .Include(w => w.Flower)
-            //    .Include(w => w.Warehouse)
-            //  .FirstOrDefaultAsync(m => m.Id == id);
+            var warehouseFlower = _unitOfWork.WarehouseFlowers.GetAllLazyLoad(p => p.Id == id, p => p.Flower, p => p.Warehouse).AsNoTracking().First();
+
             if (warehouseFlower == null)
             {
                 return NotFound();
@@ -147,9 +128,7 @@ namespace Floberbed.Controllers
 
             return View(warehouseFlower);
         }
-
-        // POST: WarehouseFlowers/Delete/5
-        [HttpPost, ActionName("Delete")]
+    [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

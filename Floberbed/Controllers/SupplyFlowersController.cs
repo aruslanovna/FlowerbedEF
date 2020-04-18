@@ -18,27 +18,22 @@ namespace Floberbed.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
-        // GET: SupplyFlowers
-        public async Task<IActionResult> Index()
+      public async Task<IActionResult> Index()
         {
-            var flowerbedDbContext = _unitOfWork.SupplyFlowers.GetAll();
+            var flowerbedDbContext = _unitOfWork.SupplyFlowers.GetWithInclude(s => s.Supply);
                 //.Include(s => s.Flower).Include(s => s.Supply);
             return View( flowerbedDbContext.ToList());
         }
 
-        // GET: SupplyFlowers/Details/5
-        public async Task<IActionResult> Details(int? id)
+          public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var supplyFlower = await _unitOfWork.SupplyFlowers.GetByID(id);
-                //.Include(s => s.Flower)
-                //.Include(s => s.Supply)
-                //.FirstOrDefaultAsync(m => m.Id == id);
+            var supplyFlower = _unitOfWork.SupplyFlowers.GetAllLazyLoad(p => p.Id == id, p => p.Flower, p => p.Supply).AsNoTracking().First();
+
             if (supplyFlower == null)
             {
                 return NotFound();
@@ -55,10 +50,7 @@ namespace Floberbed.Controllers
             return View();
         }
 
-        // POST: SupplyFlowers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+          [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FlowerId,SupplyId,Amount")] SupplyFlower supplyFlower)
         {
@@ -72,9 +64,7 @@ namespace Floberbed.Controllers
             ViewData["SupplyId"] = new SelectList(_unitOfWork.Supplies.GetAll(), "Id", "Id", supplyFlower.SupplyId);
             return View(supplyFlower);
         }
-
-        // GET: SupplyFlowers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+     public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -91,10 +81,7 @@ namespace Floberbed.Controllers
             return View(supplyFlower);
         }
 
-        // POST: SupplyFlowers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+          [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FlowerId,SupplyId,Amount")] SupplyFlower supplyFlower)
         {
@@ -128,18 +115,15 @@ namespace Floberbed.Controllers
             return View(supplyFlower);
         }
 
-        // GET: SupplyFlowers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+          public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var supplyFlower = await _unitOfWork.SupplyFlowers.GetByID(id);
-                //.Include(s => s.Flower)
-                //.Include(s => s.Supply)
-                //.FirstOrDefaultAsync(m => m.Id == id);
+            var supplyFlower =  _unitOfWork.SupplyFlowers.GetAllLazyLoad(p => p.Id == id, p => p.Flower, p => p.Supply).AsNoTracking().First();
+            
             if (supplyFlower == null)
             {
                 return NotFound();
@@ -148,8 +132,7 @@ namespace Floberbed.Controllers
             return View(supplyFlower);
         }
 
-        // POST: SupplyFlowers/Delete/5
-        [HttpPost, ActionName("Delete")]
+         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

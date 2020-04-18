@@ -19,15 +19,15 @@ namespace Floberbed.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: Supplies
+       
         public async Task<IActionResult> Index()
         {
-            var flowerbedDbContext = _unitOfWork.Supplies.GetAll();
-                //.Include(s => s.Plantation).Include(s => s.Warehouse);
+            var flowerbedDbContext =  _unitOfWork.Supplies.GetWithInclude(p => p.Warehouse);
+           
             return View( flowerbedDbContext.ToList());
         }
 
-        // GET: Supplies/Details/5
+      
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,10 +35,8 @@ namespace Floberbed.Controllers
                 return NotFound();
             }
 
-            var supply = await _unitOfWork.Supplies.GetByID(id);
-                //.Include(s => s.Plantation)
-                //.Include(s => s.Warehouse)
-                //.FirstOrDefaultAsync(m => m.Id == id);
+            var supply = _unitOfWork.Supplies.GetAllLazyLoad(p => p.Id == id, p => p.Plantation, p => p.Warehouse).AsNoTracking().First();
+           
             if (supply == null)
             {
                 return NotFound();
@@ -47,7 +45,7 @@ namespace Floberbed.Controllers
             return View(supply);
         }
 
-        // GET: Supplies/Create
+     
         public IActionResult Create()
         {
             ViewData["PlantationId"] = new SelectList(_unitOfWork.Plantations.GetAll(), "Id", "Id");
@@ -55,9 +53,7 @@ namespace Floberbed.Controllers
             return View();
         }
 
-        // POST: Supplies/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,WarehouseId,ScheduledDate,ClosedDate,Status,PlantationId")] Supply supply)
@@ -73,7 +69,7 @@ namespace Floberbed.Controllers
             return View(supply);
         }
 
-        // GET: Supplies/Edit/5
+      
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,9 +87,7 @@ namespace Floberbed.Controllers
             return View(supply);
         }
 
-        // POST: Supplies/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,WarehouseId,ScheduledDate,ClosedDate,Status,PlantationId")] Supply supply)
@@ -128,7 +122,7 @@ namespace Floberbed.Controllers
             return View(supply);
         }
 
-        // GET: Supplies/Delete/5
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,10 +130,8 @@ namespace Floberbed.Controllers
                 return NotFound();
             }
 
-            var supply = await _unitOfWork.Supplies.GetByID(id);
-                //.Include(s => s.Plantation)
-                //.Include(s => s.Warehouse)
-                //.FirstOrDefaultAsync(m => m.Id == id);
+            var supply = _unitOfWork.Supplies.GetAllLazyLoad(p => p.Id == id, p => p.Plantation, p => p.Warehouse).AsNoTracking().First();
+          
             if (supply == null)
             {
                 return NotFound();
@@ -148,7 +140,7 @@ namespace Floberbed.Controllers
             return View(supply);
         }
 
-        // POST: Supplies/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

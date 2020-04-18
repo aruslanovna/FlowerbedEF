@@ -19,14 +19,12 @@ namespace Floberbed.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: Flowers
+        
         public async Task<IActionResult> Index()
         {
             return View( _unitOfWork.Flowers.GetAll().ToList());
         }
-
-        // GET: Flowers/Details/5
-        public async Task<IActionResult> Details(int? id)
+           public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -43,15 +41,11 @@ namespace Floberbed.Controllers
             return View(flower);
         }
 
-        // GET: Flowers/Create
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Flowers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,FlowerFamily")] Flower flower)
@@ -65,7 +59,7 @@ namespace Floberbed.Controllers
             return View(flower);
         }
 
-        // GET: Flowers/Edit/5
+       
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,9 +75,7 @@ namespace Floberbed.Controllers
             return View(flower);
         }
 
-        // POST: Flowers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,FlowerFamily")] Flower flower)
@@ -116,7 +108,7 @@ namespace Floberbed.Controllers
             return View(flower);
         }
 
-        // GET: Flowers/Delete/5
+       
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +126,7 @@ namespace Floberbed.Controllers
             return View(flower);
         }
 
-        // POST: Flowers/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

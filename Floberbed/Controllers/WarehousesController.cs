@@ -19,13 +19,13 @@ namespace Floberbed.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: Warehouses
+     
         public async Task<IActionResult> Index()
         {
             return View( _unitOfWork.Warehouses.GetAll());
         }
 
-        // GET: Warehouses/Details/5
+      
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace Floberbed.Controllers
             }
 
             var warehouse = await _unitOfWork.Warehouses.GetByID(id);
-                //.FirstOrDefaultAsync(m => m.Id == id);
+            
             if (warehouse == null)
             {
                 return NotFound();
@@ -42,17 +42,13 @@ namespace Floberbed.Controllers
 
             return View(warehouse);
         }
-
-        // GET: Warehouses/Create
-        public IActionResult Create()
+    public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Warehouses/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+
+           [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id")] Warehouse warehouse)
         {
@@ -65,7 +61,7 @@ namespace Floberbed.Controllers
             return View(warehouse);
         }
 
-        // GET: Warehouses/Edit/5
+    
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,10 +77,7 @@ namespace Floberbed.Controllers
             return View(warehouse);
         }
 
-        // POST: Warehouses/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+       [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id")] Warehouse warehouse)
         {
@@ -116,7 +109,6 @@ namespace Floberbed.Controllers
             return View(warehouse);
         }
 
-        // GET: Warehouses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,7 +117,7 @@ namespace Floberbed.Controllers
             }
 
             var warehouse = await _unitOfWork.Warehouses.GetByID(id);
-               // .FirstOrDefaultAsync(m => m.Id == id);
+              
             if (warehouse == null)
             {
                 return NotFound();
@@ -134,7 +126,6 @@ namespace Floberbed.Controllers
             return View(warehouse);
         }
 
-        // POST: Warehouses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
